@@ -40,11 +40,21 @@ async def async_setup_entry(
 
 
 class ServiceDueBinarySensor(MaintenanceScheduleEntity, BinarySensorEntity):
-    """Whether this maintenance schedule has crossed its threshold(s)."""
+    """Whether this maintenance schedule has crossed its threshold(s).
+
+    device_class stays PROBLEM so this still gets picked up correctly by
+    HA's Areas/dashboard "problem" grouping and any voice-assistant
+    exposure, but the displayed on/off text is overridden via
+    translation_key to read "Yes"/"No" instead of the device class's
+    default "Problem"/"OK" - friendlier for a dashboard glance, and the
+    override lives in translations/en.json under
+    entity.binary_sensor.service_due.state.
+    """
 
     _attr_name = "Service due"
     _attr_icon = "mdi:wrench-clock"
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
+    _attr_translation_key = "service_due"
 
     def __init__(self, manager: MaintenanceScheduleManager) -> None:
         """Initialize the service-due binary sensor."""
@@ -61,6 +71,8 @@ class ServiceDueBinarySensor(MaintenanceScheduleEntity, BinarySensorEntity):
         return {
             "hours_since_service": self._manager.hours_since_service,
             "days_since_service": self._manager.days_since_service,
+            "hours_remaining": self._manager.hours_remaining,
+            "days_remaining": self._manager.days_remaining,
             "threshold_hours": self._manager.threshold_hours,
             "threshold_days": self._manager.threshold_days,
             "logic": self._manager.logic,

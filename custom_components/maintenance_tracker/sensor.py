@@ -37,6 +37,8 @@ async def async_setup_entry(
         [
             HoursSinceServiceSensor(manager),
             DaysSinceServiceSensor(manager),
+            HoursRemainingSensor(manager),
+            DaysRemainingSensor(manager),
         ]
     )
 
@@ -78,3 +80,57 @@ class DaysSinceServiceSensor(MaintenanceScheduleEntity, SensorEntity):
     def native_value(self) -> float | None:
         """Return days elapsed since the last service reset."""
         return self._manager.days_since_service
+
+
+class HoursRemainingSensor(MaintenanceScheduleEntity, SensorEntity):
+    """Hours until the hours threshold is reached - negative once overdue.
+
+    Only meaningful when an hours threshold is configured on this
+    schedule; reports unavailable otherwise rather than a confusing 0.
+    """
+
+    _attr_name = "Hours remaining"
+    _attr_icon = "mdi:timer-sand"
+    _attr_native_unit_of_measurement = UnitOfTime.HOURS
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(self, manager: Any) -> None:
+        """Initialize the hours-remaining sensor."""
+        super().__init__(manager, "hours_remaining")
+
+    @property
+    def native_value(self) -> float | None:
+        """Return hours remaining until due, negative once overdue."""
+        return self._manager.hours_remaining
+
+    @property
+    def available(self) -> bool:
+        """Only available when this schedule has an hours threshold set."""
+        return self._manager.threshold_hours is not None
+
+
+class DaysRemainingSensor(MaintenanceScheduleEntity, SensorEntity):
+    """Days until the days threshold is reached - negative once overdue.
+
+    Only meaningful when a days threshold is configured on this
+    schedule; reports unavailable otherwise rather than a confusing 0.
+    """
+
+    _attr_name = "Days remaining"
+    _attr_icon = "mdi:timer-sand"
+    _attr_native_unit_of_measurement = UnitOfTime.DAYS
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(self, manager: Any) -> None:
+        """Initialize the days-remaining sensor."""
+        super().__init__(manager, "days_remaining")
+
+    @property
+    def native_value(self) -> float | None:
+        """Return days remaining until due, negative once overdue."""
+        return self._manager.days_remaining
+
+    @property
+    def available(self) -> bool:
+        """Only available when this schedule has a days threshold set."""
+        return self._manager.threshold_days is not None
