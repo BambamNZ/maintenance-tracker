@@ -1,0 +1,19 @@
+[project]
+name = "maintenance_tracker"
+version = "0.2.0"
+requires-python = ">=3.13.2"
+dependencies = [
+    "colorlog",
+    "ffmpeg",
+    "ha-ffmpeg",
+    "hassil",
+    "home-assistant-intents==2026.7.30",
+    "homeassistant==2026.2.3",
+    "mutagen",
+    "numpy",
+    "pip>=26.2",
+    "pymicro-vad",
+    "pyspeex-noise",
+    "PyTurboJPEG",
+    "ruff>=0.16.1",
+]
