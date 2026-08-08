@@ -141,6 +141,26 @@ class MaintenanceScheduleManager:
         return round(delta.total_seconds() / 86400, 2)
 
     @property
+    def hours_remaining(self) -> float | None:
+        """Return hours until the hours threshold is reached.
+
+        None when no hours threshold is configured or hours_since_service
+        isn't available yet. Goes negative once overdue - e.g. -3.5 means
+        3.5 hours past the threshold - rather than clamping at 0, so it
+        actually answers "by how much" once a schedule is overdue.
+        """
+        if self.threshold_hours is None or self.hours_since_service is None:
+            return None
+        return round(self.threshold_hours - self.hours_since_service, 2)
+
+    @property
+    def days_remaining(self) -> float | None:
+        """Return days until the days threshold is reached, negative once overdue."""
+        if self.threshold_days is None or self.days_since_service is None:
+            return None
+        return round(self.threshold_days - self.days_since_service, 2)
+
+    @property
     def is_due(self) -> bool:
         """Return whether this schedule is currently due for service."""
         hours_due = (
@@ -218,16 +238,10 @@ class MaintenanceScheduleManager:
         """Raise a persistent notification that this schedule is due."""
         name = self.entry.title
         parts = []
-        if self.threshold_hours is not None and self.hours_since_service is not None:
-            parts.append(
-                f"{self.hours_since_service:.1f}h since last service "
-                f"(threshold {self.threshold_hours}h)"
-            )
-        if self.threshold_days is not None and self.days_since_service is not None:
-            parts.append(
-                f"{self.days_since_service:.0f} days since last service "
-                f"(threshold {self.threshold_days} days)"
-            )
+        if self.threshold_hours is not None and self.hours_remaining is not None:
+            parts.append(f"{-self.hours_remaining:.1f}h overdue")
+        if self.threshold_days is not None and self.days_remaining is not None:
+            parts.append(f"{-self.days_remaining:.0f} days overdue")
         detail = " / ".join(parts) or "Service threshold reached."
 
         await self.hass.services.async_call(

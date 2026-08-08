@@ -34,6 +34,16 @@
       }
     }
   },
+  "entity": {
+    "binary_sensor": {
+      "service_due": {
+        "state": {
+          "off": "No",
+          "on": "Yes"
+        }
+      }
+    }
+  },
   "selector": {
     "logic": {
       "options": {
