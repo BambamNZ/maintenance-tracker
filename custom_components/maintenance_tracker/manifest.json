@@ -1,0 +1,13 @@
+{
+  "domain": "maintenance_tracker",
+  "name": "Maintenance Tracker",
+  "codeowners": [
+    "@BambamNZ"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/BambamNZ/maintenance-tracker",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/BambamNZ/maintenance-tracker",
+  "requirements": [],
+  "version": "0.1.0"
+}

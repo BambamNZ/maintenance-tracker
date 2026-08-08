@@ -1,0 +1,45 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a maintenance schedule",
+        "description": "Track hours and/or days since a usage-tracked device was last serviced.",
+        "data": {
+          "name": "Schedule name",
+          "source_sensor": "Usage sensor",
+          "threshold_hours": "Hours threshold",
+          "threshold_days": "Days threshold",
+          "logic": "When both thresholds are set",
+          "notify": "Send a persistent notification when due"
+        }
+      }
+    },
+    "error": {
+      "threshold_required": "Set at least one of the hours or days threshold."
+    },
+    "abort": {
+      "already_configured": "A schedule with this name and source sensor already exists."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Adjust schedule thresholds",
+        "data": {
+          "threshold_hours": "Hours threshold",
+          "threshold_days": "Days threshold",
+          "logic": "When both thresholds are set",
+          "notify": "Send a persistent notification when due"
+        }
+      }
+    }
+  },
+  "selector": {
+    "logic": {
+      "options": {
+        "or": "Either threshold (OR)",
+        "and": "Both thresholds (AND)"
+      }
+    }
+  }
+}
